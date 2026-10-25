@@ -12,7 +12,7 @@
 #   3. 试试：①穿山甲舆情有哪些？②贵州茅台多少钱？③帮我写首关于秋天的诗
 # ============================================
 
-import urllib.request, urllib.error, json, math, os
+import urllib.request, urllib.error, datetime,json, math, os
 
 with open("key.txt") as f:
     my_key = f.read().strip()
@@ -91,6 +91,10 @@ def 查股价(股票名):
         return f"{股票名} 当前价格 {行情[股票名]} 元"    # 按钮结果必须是文字，裸数字会被服务器拒收
     return f"没有 {股票名} 的数据（可查：贵州茅台/腾讯控股/宁德时代）"
 
+# ====== 按钮 3：查股时间 ======
+def 查时间():
+    return "现在是 " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
 # ====== 按钮说明书（模型只能从这份清单里挑）======
 按钮说明书 = [
     {"type": "function", "function": {
@@ -105,9 +109,14 @@ def 查股价(股票名):
         "parameters": {"type": "object",
                        "properties": {"股票名": {"type": "string", "description": "股票中文名"}},
                        "required": ["股票名"]}}},
+    {"type": "function", "function": {
+        "name": "查时间",
+        "description": "查询现在的日期和时间。问现在几点、今天几号时用它。",
+        "parameters": {"type": "object", "properties": {}, "required": []}}},
+
 ]
 
-真按钮 = {"查舆情知识库": 查舆情知识库, "查股价": 查股价}
+真按钮 = {"查舆情知识库": 查舆情知识库, "查股价": 查股价, "查时间": 查时间}
 
 print("=== RAG + Tool Calling Agent（q 退出）===")
 print("试试：①穿山甲舆情有哪些？ ②贵州茅台多少钱？ ③帮我写首关于秋天的诗\n")
