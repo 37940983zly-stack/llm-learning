@@ -37,6 +37,15 @@ def 问(白板):
     return 回应["choices"][0]["message"]["content"], 小票
 
 白板 = []      # 空白板，聊天历史从零开始
+
+try:
+    with open("记忆.txt") as f:
+        旧记忆 = f.read().strip()
+    if 旧记忆:
+        白板.append({"role": "system", "content": "用户档案：" + 旧记忆})
+        print("（已加载长期记忆：" + 旧记忆 + "）")
+except FileNotFoundError:
+    pass
 总账 = 0       # 账本：本次聊天累计花费
 
 print("=== 迷你聊天程序 ===")
@@ -58,4 +67,8 @@ while True:                                        # 【循环】一直转
     print("AI：", 回答)
     print(f"（白板 {len(白板)} 条消息 | 累计 {总账} token）\n")
 
+新记忆 = input("要往长期记忆里存点什么？（回车跳过）")
+if 新记忆:
+    with open("记忆.txt", "w") as f:
+        f.write(新记忆)
 print(f"\n再见！本次聊天白板共 {len(白板)} 条消息，总消耗 {总账} token。")
