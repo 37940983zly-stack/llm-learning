@@ -3,3 +3,4 @@ key.txt
 __pycache__/
 .DS_Store
 chat.db
+chat.db
