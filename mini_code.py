@@ -43,7 +43,7 @@ def 写文件(路径, 内容):
     print(f"\n  ⚠️ 即将写文件：{路径}")
     print("  预览（前 200 字）：", 内容[:200].replace("\n", " "))
     if input("  允许写入？(y/n)：").strip().lower() != "y":     # 人审：不可逆动作先问
-        return "用户拒绝了写入。"
+        return "用户明确拒绝写入。不要重复尝试相同的写入操作。请改变方案，或者直接汇报任务无法完成及原因。"
     with open(路径, "w") as f:
         f.write(内容)
     return f"已写入 {路径}（{len(内容)} 字）"
@@ -57,7 +57,7 @@ def 列目录(路径="."):
 def 跑命令(命令):
     print(f"\n  ⚠️ 即将执行命令：{命令}")
     if input("  允许执行？(y/n)：").strip().lower() != "y":     # 人审：最危险的按钮
-        return "用户拒绝了执行。"
+        return "用户明确拒绝执行此命令。不要重复尝试。请改变方案，或者汇报任务无法完成。"
     try:
         结果 = subprocess.run(命令, shell=True, capture_output=True, text=True, timeout=20)
         输出 = (结果.stdout + 结果.stderr)[:1500]
