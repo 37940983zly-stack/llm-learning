@@ -34,9 +34,8 @@ def 翻账(条数=20):
                       (条数,)).fetchall()
     return [{"谁": r, "内容": c, "时间": t} for r, c, t in reversed(行们)]
 
-def 问(消息):
-    card = {"model": "glm-4.5-flash", "temperature": 0.7,
-            "messages": [{"role": "user", "content": 消息}]}
+def 问(白板):
+    card = {"model": "glm-4.5-flash", "temperature": 0.7, "messages": 白板}
     req = urllib.request.Request(
         "https://open.bigmodel.cn/api/paas/v4/chat/completions",
         data=json.dumps(card).encode(),
@@ -101,7 +100,10 @@ class 聊天请求(BaseModel):
 
 @app.post("/chat")
 def 聊天(请求: 聊天请求):
-    回答 = 问(请求.消息)
+    历史 = 翻账(10)                                                    # 先翻账：最近10条
+    白板 = [{"role": m["谁"], "content": m["内容"]} for m in 历史]      # 抄上白板
+    白板.append({"role": "user", "content": 请求.消息})                  # 再添上这句新话
+    回答 = 问(白板)
     记账("user", 请求.消息)       # 客人的话记账
     记账("assistant", 回答)       # AI 的回话也记账
     return {"回答": 回答}
