@@ -4,6 +4,9 @@
 # 第1步：选一块地基——官方迷你版 Python 3.9（自带干净的系统）
 FROM python:3.9-slim
 
+# 第1.5步：指定箱内工作目录（此后所有 COPY/挂载/CMD 都以它为家）
+WORKDIR /app
+
 # 第2步：把购物单和菜谱（依赖清单+全部代码）搬进箱内
 COPY requirements.txt .
 COPY web_chat2.py .
