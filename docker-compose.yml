@@ -1,0 +1,12 @@
+# ===== 一条命令开张（docker-compose.yml）=====
+# 让"构建镜像+启动容器+打通端口"三件事合成一条命令：docker compose up
+
+services:
+  chat:
+    build: .                  # 按 Dockerfile 装箱
+    ports:
+      - "8000:8000"           # 左边宿主机端口:右边集装箱端口（把箱内8000接到本机8000）
+    volumes:
+      - ./chat.db:/app/chat.db   # 账本不装箱：用你本机的文件挂进去（数据与容器分离）
+      - ./key.txt:/app/key.txt   # 密钥不装箱：运行时挂载（密钥分家的 Docker 版）
+    restart: unless-stopped   # 挂了自动重启（除非你自己关）
