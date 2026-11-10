@@ -1,0 +1,14 @@
+name: 代码体检
+on: [push]
+jobs:
+  check:                       # job id 必须英文（这是上次中文id踩的坑）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: 语法检查所有程序
+        run: |
+          python3 -m py_compile *.py
+          echo "✅ 全部语法通过"
