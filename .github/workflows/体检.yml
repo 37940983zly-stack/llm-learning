@@ -1,0 +1,15 @@
+# 代码体检单：每次 push，云端机器自动检查所有 Python 文件的语法
+name: 代码体检
+on: [push]                    # 触发时机：每次推送
+jobs:
+  体检:
+    runs-on: ubuntu-latest    # GitHub 免费借你一台 Ubuntu 云端机器
+    steps:
+      - uses: actions/checkout@v4      # 第一步：把你的仓库代码搬到那台机器上
+      - uses: actions/setup-python@v5  # 第二步：给那台机器装 Python
+        with:
+          python-version: '3.9'
+      - name: 语法检查所有程序    # 第三步：逐个编译所有 .py，语法错当场红牌
+        run: |
+          python3 -m py_compile *.py
+          echo "✅ 全部语法通过"
