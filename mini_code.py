@@ -30,8 +30,21 @@ def 问模型(白板, 工具):
         print("服务器拒绝了，状态码：", e.code, "原话：", e.read().decode())
         raise SystemExit
 
+# ===== 安全围栏：Agent 只能在项目文件夹里干活（最小权限改装 2026-11-13）=====
+工作围栏 = "/Volumes/z的磁盘/zcode/2026-10-12-llm-learning"
+
+def 在围栏内(路径):
+    """检查路径是否在项目文件夹内——不在就拒绝（防全盘权限盲点）"""
+    绝对路径 = os.path.abspath(路径)
+    if not 绝对路径.startswith(工作围栏):
+        return False, f"权限拒绝：只能操作 {工作围栏} 内的文件，你试图访问 {绝对路径}"
+    return True, ""
+
 # ===== 四个真按钮 =====
 def 读文件(路径):
+    通过, 拒绝理由 = 在围栏内(路径)
+    if not 通过:
+        return 拒绝理由
     try:
         with open(路径) as f:
             内容 = f.read()
@@ -40,6 +53,9 @@ def 读文件(路径):
         return f"读失败：{e}"
 
 def 写文件(路径, 内容):
+    通过, 拒绝理由 = 在围栏内(路径)
+    if not 通过:
+        return 拒绝理由
     print(f"\n  ⚠️ 即将写文件：{路径}")
     print("  预览（前 200 字）：", 内容[:200].replace("\n", " "))
     if input("  允许写入？(y/n)：").strip().lower() != "y":     # 人审：不可逆动作先问
@@ -49,6 +65,9 @@ def 写文件(路径, 内容):
     return f"已写入 {路径}（{len(内容)} 字）"
 
 def 列目录(路径="."):
+    通过, 拒绝理由 = 在围栏内(路径)
+    if not 通过:
+        return 拒绝理由
     try:
         return "\n".join(sorted(os.listdir(路径))[:50])
     except Exception as e:
